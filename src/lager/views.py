@@ -63,8 +63,8 @@ def main(request):
             vektet_risiko = [i * nedetidskostnad_dag for i in probabilities]
             
             context.update({
-            	'cdf_start': cdf_start,
-            	'vektet_risiko': vektet_risiko
+                'cdf_start': cdf_start,
+                'vektet_risiko': vektet_risiko
             	})
 
             # Beregne vektet lagerkostnad
@@ -75,20 +75,35 @@ def main(request):
                 vektet_lagerkost.append(i * vektet_lagerkost_dag[i-1])
 
             context.update({
-            	'vektet_lagerkost': vektet_lagerkost
-            	})
+                'vektet_lagerkost': vektet_lagerkost
+                })
 
             # Finn kritisk dag
-            i = 0
-            while vektet_risiko[i] < vektet_lagerkost[i]:
-            	i += 1
+            if konsekvens != 'Ingen avbrudd':
+                i = 0
+                if vektet_risiko[i] > vektet_lagerkost[i]:
+                	kritisk_dato = today + timedelta(days=i)
+                	context.update({
+                    'kritisk_dag': i,
+                    'kritisk_dato': kritisk_dato,
+                    'kritisk': True
+                    })
+                else:
+                    #while vektet_risiko[i] < vektet_lagerkost[i]:
+                    #    i += 1
+                    for i in range(0, len(vektet_risiko)):
+                    	lagerhold = vektet_risiko[i] > vektet_lagerkost[i]
+                    	if lagerhold:
+                    		i = i
+                    		break
 
-            kritisk_dato = today + timedelta(days=i)
-
-            context.update({
-            	'kritisk_dag': i,
-            	'kritisk_dato': kritisk_dato
-            	})
+                    kritisk_dato = today + timedelta(days=i)
+    
+                    context.update({
+                    'kritisk_dag': i,
+                    'kritisk_dato': kritisk_dato,
+                    'kritisk': True
+                    })
 
 
 

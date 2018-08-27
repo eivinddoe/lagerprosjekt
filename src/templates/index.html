@@ -33,7 +33,7 @@
 
 {% if analyse %}
 
-Du har oppgitt at delen koster {{ pris }}. Det gir en daglig lagerkost kr {{ lagerkost_dag }}.<br />
+Du har oppgitt at delen koster {{ pris }}. <!-- Det gir en daglig lagerkost kr {{ lagerkost_dag }}.--><br />
 Leveringstiden ({{ leveringstid }} uker) er {{ leveringstid_dager }} dager.<br />
 Du har oppgitt at delen sist ble byttet den {{ sist_byttet }}. <br />
 Du har oppgitt at delen har levetid {{ levetid }} år, dvs. {{ levetid_dager }} dager. <br />
@@ -43,7 +43,17 @@ Du har oppgitt at konsekvensen ved defekt er {{ konsekvens }}.<br />
 
 Probs: CDF start er {{ cdf_start }}<br /> -->
 
+{% if kritisk and not lav_risiko %}
 <b>Kritisk dag: {{ kritisk_dag }}, {{ kritisk_dato }}</b>
+{% endif %}
+
+{% if not kritisk %}
+<b>Delen skal ikke holdes på lager.</b>
+{% endif %}
+
+{% if lav_risiko %}
+<b>Delen koster mer enn den smaker.</b>
+{% endif %}
 
 <div class="row">
 <div class="col-sm-6">
