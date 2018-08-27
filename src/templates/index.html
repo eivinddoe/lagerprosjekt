@@ -1,17 +1,66 @@
-<!-- DOCTYPE html -->
+<!doctype html>
 
 <html>
+<head>
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+{% load bootstrap %}
+
+{{ form.media }}
+
+</head>
 <body>
-<h1>View is working</h1>
 
-<form method="POST" enctype="multipart/form-data" />
+<div class="container">
+
+<h1>Beslutningsverktøy for reservedelslager</h1>
+
+<form role="form" method="POST" enctype="multipart/form-data" />
 	{% csrf_token %}
-	{{ form }}
-	<input type="submit" value="Send" />
+	{{ form|bootstrap }}
+	<div class="form-group">
+	<button type="submit" class="btn btn-primary" />Send til vurdering</button>
+
+	</div>
 </form>
 
-<p> {{ pris }} {{ leveringstid }} {{ sist_byttet }} {{ levetid }} {{ konsekvens }}
+{% if analyse %}
+
+Du har oppgitt at delen koster {{ pris }}. Det gir en daglig lagerkost kr {{ lagerkost_dag }}.<br />
+Leveringstiden ({{ leveringstid }} uker) er {{ leveringstid_dager }} dager.<br />
+Du har oppgitt at delen sist ble byttet den {{ sist_byttet }}. <br />
+Du har oppgitt at delen har levetid {{ levetid }} år, dvs. {{ levetid_dager }} dager. <br />
+<!-- I dag er det {{ today }}. <br />
+Tid inne er {{ tid_inne }} dager. <br />
+Du har oppgitt at konsekvensen ved defekt er {{ konsekvens }}.<br />
+
+Probs: CDF start er {{ cdf_start }}<br /> -->
+
+<b>Kritisk dag: {{ kritisk_dag }}, {{ kritisk_dato }}</b>
+
+<div class="row">
+<div class="col-sm-6">
+Vektet risiko er <br />
+{{ vektet_risiko }}.
+</div>
+<div class="col-sm-6">
+Lagerkostnad er: <br />
+{{ vektet_lagerkost}}
+</div>
+</div>
+Takk for at du har brukt beslutningsverktøyet.
+<button class="btn btn-outline-success">Lagre vurdering</button>
+{% endif %}
+
+</div>
+
 </body>
 
 </html>
