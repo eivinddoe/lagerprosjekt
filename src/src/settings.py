@@ -25,7 +25,7 @@ SECRET_KEY = '+cw57o=k8#*u2mn-6vsx!73n%1bpzb2t6h$-g%k0n&y4pd6ugj'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['fodo.pythonanywhere.com']
 
 
 # Application definition
