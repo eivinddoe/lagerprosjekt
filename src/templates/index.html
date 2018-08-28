@@ -43,12 +43,20 @@ Du har oppgitt at konsekvensen ved defekt er {{ konsekvens }}.<br />
 
 Probs: CDF start er {{ cdf_start }}<br /> -->
 
+{% if kritisk and levetid_lager %}
+<b>Delen er kritisk og har passert sin levetid. Bør holdes på lager.</b>
+{% endif %}
+
 {% if kritisk and not lav_risiko %}
 <b>Kritisk dag: {{ kritisk_dag }}, {{ kritisk_dato }}</b>
 {% endif %}
 
-{% if not kritisk %}
+{% if not kritisk and not levetid_lager %}
 <b>Delen skal ikke holdes på lager.</b>
+{% endif %}
+
+{% if not kritisk and levetid_lager %}
+<b>Delen skal ikke holdes på lager, men den har passert sin levetid.</b>
 {% endif %}
 
 {% if lav_risiko %}

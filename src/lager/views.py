@@ -53,57 +53,66 @@ def main(request):
             else:
             	nedetidskostnad_dag = 0
 
-            cdf_start = WeibullCDF(tid_inne, levetid_dager, 5)
-            survival = 1-cdf_start
+            if tid_inne >= levetid_dager:
+            	context.update({
+            		'levetid_lager': True
+            		})
+            	if konsekvens != 'Ingen avbrudd':
+            		context.update({
+            			'kritisk': True
+            			})
+            else:
+                cdf_start = WeibullCDF(tid_inne, levetid_dager, 5)
+                survival = 1-cdf_start
             
-            probabilities = []
-            for i in range(tid_inne + 1, levetid_dager + 1):
-                probabilities.append((WeibullCDF(i, levetid_dager, 5)-cdf_start)/survival)
+                probabilities = []
+                for i in range(tid_inne + 1, levetid_dager + 1):
+                    probabilities.append((WeibullCDF(i, levetid_dager, 5)-cdf_start)/survival)
 
-            vektet_risiko = [i * nedetidskostnad_dag for i in probabilities]
+                vektet_risiko = [i * nedetidskostnad_dag for i in probabilities]
             
-            context.update({
-                'cdf_start': cdf_start,
-                'vektet_risiko': vektet_risiko
-            	})
+                context.update({
+                    'cdf_start': cdf_start,
+                    'vektet_risiko': vektet_risiko
+            	    })
 
-            # Beregne vektet lagerkostnad
-            probabilities_complement = [(1-i) for i in probabilities]
-            vektet_lagerkost_dag = [i * lagerkost_dag for i in probabilities_complement]
-            vektet_lagerkost = []
-            for i in range(1,len(vektet_lagerkost_dag)+1):
-                vektet_lagerkost.append(i * vektet_lagerkost_dag[i-1])
+                # Beregne vektet lagerkostnad
+                probabilities_complement = [(1-i) for i in probabilities]
+                vektet_lagerkost_dag = [i * lagerkost_dag for i in probabilities_complement]
+                vektet_lagerkost = []
+                for i in range(1,len(vektet_lagerkost_dag)+1):
+                    vektet_lagerkost.append(i * vektet_lagerkost_dag[i-1])
 
-            context.update({
-                'vektet_lagerkost': vektet_lagerkost
-                })
-
-            # Finn kritisk dag
-            if konsekvens != 'Ingen avbrudd':
-                i = 0
-                if vektet_risiko[i] > vektet_lagerkost[i]:
-                	kritisk_dato = today + timedelta(days=i)
-                	context.update({
-                    'kritisk_dag': i,
-                    'kritisk_dato': kritisk_dato,
-                    'kritisk': True
+                context.update({
+                    'vektet_lagerkost': vektet_lagerkost
                     })
-                else:
-                    #while vektet_risiko[i] < vektet_lagerkost[i]:
-                    #    i += 1
-                    for i in range(0, len(vektet_risiko)):
-                    	lagerhold = vektet_risiko[i] > vektet_lagerkost[i]
-                    	if lagerhold:
-                    		i = i
-                    		break
 
-                    kritisk_dato = today + timedelta(days=i)
+                # Finn kritisk dag
+                if konsekvens != 'Ingen avbrudd':
+                    i = 0
+                    if vektet_risiko[i] > vektet_lagerkost[i]:
+                	    kritisk_dato = today + timedelta(days=i)
+                	    ontext.update({
+                        'kritisk_dag': i,
+                        'kritisk_dato': kritisk_dato,
+                        'kritisk': True
+                        })
+                    else:
+                        #while vektet_risiko[i] < vektet_lagerkost[i]:
+                        #    i += 1
+                        for i in range(0, len(vektet_risiko)):
+                    	    lagerhold = vektet_risiko[i] > vektet_lagerkost[i]
+                    	    if lagerhold:
+                    		    i = i
+                    		    break
+
+                        kritisk_dato = today + timedelta(days=i)
     
-                    context.update({
-                    'kritisk_dag': i,
-                    'kritisk_dato': kritisk_dato,
-                    'kritisk': True
-                    })
+                        context.update({
+                        'kritisk_dag': i,
+                        'kritisk_dato': kritisk_dato,
+                        'kritisk': True
+                        })
 
 
 
