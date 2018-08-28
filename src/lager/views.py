@@ -92,7 +92,7 @@ def main(request):
                     i = 0
                     if vektet_risiko[i] > vektet_lagerkost[i]:
                 	    kritisk_dato = today + timedelta(days=i)
-                	    ontext.update({
+                	    context.update({
                         'kritisk_dag': i,
                         'kritisk_dato': kritisk_dato,
                         'kritisk': True
