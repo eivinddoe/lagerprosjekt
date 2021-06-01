@@ -19,6 +19,6 @@ pytz==2018.5
 requests==2.19.1
 scipy==1.1.0
 six==1.11.0
-urllib3==1.23
+urllib3==1.26.5
 weibull==0.0.13
 yarg==0.1.9
